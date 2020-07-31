@@ -1,4 +1,8 @@
-#include <iostream> 
+#include <iostream>
+#include <stdio.h> 
+#include <stdlib.h> 
+#include <unistd.h> 
+#include <pthread.h>
 
 void request_resource(){
    sleep(1);
