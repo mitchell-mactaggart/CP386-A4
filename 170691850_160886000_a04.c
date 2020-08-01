@@ -7,6 +7,7 @@
 
 //Variable Declaration
 int n, m, i, j, k, *safeSeq;
+char tmp[256];
 
 
 void request_resource(){
@@ -27,7 +28,7 @@ int main(int argc, char *argv[])
 		printf("Argument Not Found");
 		exit(1);
 	}
-	//Opening File
+	//Opening File.
     FILE * fp;
     fp = fopen("sample4_in.txt","r");
     
