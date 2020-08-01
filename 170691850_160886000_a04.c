@@ -5,6 +5,7 @@
 #include <stdbool.h>
 #include <time.h>
 
+//Variable Declaration
 int n, m, i, j, k, *safeSeq;
 
 
@@ -19,16 +20,25 @@ void release_resource(){
   return NULL;
 }
 
-int main() 
+int main(int argc, char *argv[]) 
 { 
-
+	//Command Line Arguments
+	if(argc <2){
+		printf("Argument Not Found");
+		exit(1);
+	}
+	//Opening File
     FILE * fp;
     fp = fopen("sample4_in.txt","r");
-
+    
+    //ask for currently avaialbe resources
+    printf("Currently Avaiable Resources : " );
+    fgets(tmp,sizeof(tmp),stdin);
+    
     for (c = getc(fp); c != EOF; c = getc(fp)) 
         if (c == '\n')
             n = n + 1; 
-
+    
     int max[n][4];
     int i,j;
 
