@@ -1,8 +1,10 @@
 # Project title
 CP386 Assignment 4 
+
 Professor Sukhjit Singh Sehra
 # Contributors:
 Hassan Siddiqui
+
 Mitchell MacTaggert
 
 # Motivation
