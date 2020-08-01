@@ -5,9 +5,9 @@ Student ID: 170691850
 Github Username: Sidd1850
 
 Name: Mitchell MacTaggart
-Email: @mylaurier.ca
-Student ID: 
-GitHub Username: 
+Email: mact6000@mylaurier.ca
+Student ID: 160886000
+GitHub Username: mitchell-macTaggart
 */
 
 #include <stdio.h>
@@ -25,48 +25,8 @@ GitHub Username:
 int n, m, i, j, k, *safeSeq;
 char tmp[256];
 
+int bankers_algoithm(){
 
-void request_resource(){
-   sleep(1);
-   return NULL;
-}
-
-void release_resource(){
-  sleep(2);
-  int alloc[5][4];
-  return NULL;
-}
-
-int main(int argc, char *argv[]) 
-{ 
-	//Command Line Arguments
-	if(argc <2){
-		printf("Argument Not Found");
-		exit(1);
-	}
-	//Opening File.
-    FILE * fp;
-    fp = fopen("sample4_in.txt","r");
-    
-    //ask for currently avaialbe resources
-    printf("Currently Avaiable Resources : " );
-    fgets(tmp,sizeof(tmp),stdin);
-    
-    for (c = getc(fp); c != EOF; c = getc(fp)) 
-        if (c == '\n')
-            n = n + 1; 
-    
-    int max[n][4];
-    int i,j;
-
-    for(i=0; i<=n; i++) {
-        for(j=0; j<12; j++) {
-            fscanf(fp, " %i", &max[i][j]);;
-        }
-    }
-
-    int avail[4] = { 10, 5, 7, 8 }; // Available Resources 
-  
     int f[n], ans[n], ind = 0; 
     for (k = 0; k < n; k++) { 
         f[k] = 0; 
@@ -99,12 +59,69 @@ int main(int argc, char *argv[])
         } 
     } 
   
-    printf("Following is the SAFE Sequence\n"); 
-    for (i = 0; i < n - 1; i++) 
-        printf(" P%d ->", ans[i]); 
-    printf(" P%d", ans[n - 1]); 
-  
     return (0); 
+
+}
+
+
+void request_resource(){
+   sleep(1);
+   return NULL;
+}
+
+void release_resource(){
+  sleep(2);
+  int alloc[5][4];
+  return NULL;
+}
+
+void set_max_resources(){
+    //Opening File.
+    FILE * fp;
+    fp = fopen("sample4_in.txt","r");
+
+    for (c = getc(fp); c != EOF; c = getc(fp)) 
+        if (c == '\n')
+            n = n + 1; 
+    
+    int max[n][4];
+    int i,j;
+
+    for(i=0; i<=n; i++) {
+        for(j=0; j<12; j++) {
+            fscanf(fp, " %i", &max[i][j]);;
+        }
+    }
+
+}
+
+int main(int argc, char *argv[]) 
+{ 
+	//Command Line Arguments
+	if(argc <2){
+		printf("Argument Not Found");
+		exit(1);
+	}
+    
+    int avail[4] = { 10, 5, 7, 8 }; // Available Resources 
+
+
+    printf("Number of Customers: %d\n", n);
+    
+    //ask for currently avaialbe resources
+    printf("Currently Available Resources : " );
+    fgets(tmp,sizeof(tmp),stdin);
+
+    printf("Maximum resources from file:\n");
+    for(i=0; i<m; i++) {
+        for(j=0; j<n; j++) {
+            printf("%c",max[i][j]);
+        }
+    }
+
+    printf("Enter Command:");
+    scanf("%s",command);
+    printf("%s \n",command);
 
 }
 
