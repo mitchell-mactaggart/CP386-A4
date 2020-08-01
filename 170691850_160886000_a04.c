@@ -1,8 +1,11 @@
-#include <iostream>
-#include <stdio.h> 
-#include <stdlib.h> 
-#include <unistd.h> 
+#include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <pthread.h>
+#include <stdbool.h>
+#include <time.h>
+
+int n, m, i, j, k, *safeSeq;
 
 void request_resource(){
    sleep(1);
@@ -11,14 +14,12 @@ void request_resource(){
 
 void release_resource(){
   sleep(2);
+  int alloc[5][4];
   return NULL;
 }
 
 int main() 
-{
-    int n, m, i, j, k; 
-    n = 0; // Number of processes 
-    m = 3; // Number of resources 
+{ 
 
     FILE * fp;
     fp = fopen("sample4_in.txt","r");
@@ -77,4 +78,44 @@ int main()
   
     return (0); 
 
+}
+
+bool getSafeSeq() {
+	// get safe sequence
+        int tempRes[n];
+        for(int i=0; i<n; i++) tempRes[i] = resources[i];
+
+        bool finished[m];
+        for(int i=0; i<m; i++) finished[i] = false;
+        int nfinished=0;
+        while(nfinished < m) {
+                bool safe = false;
+
+                for(int i=0; i<m; i++) {
+                        if(!finished[i]) {
+                                bool possible = true;
+
+                                for(int j=0; j<n; j++)
+                                        if(need[i][j] > tempRes[j]) {
+                                                possible = false;
+                                                break;
+                                        }
+
+                                if(possible) {
+                                        for(int j=0; j<n; j++)
+                                                tempRes[j] += allocated[i][j];
+                                        safeSeq[nfinished] = i;
+                                        finished[i] = true;
+                                        ++nfinished;
+                                        safe = true;
+                                }
+                        }
+                }
+
+                if(!safe) {
+                        for(int k=0; k<m; k++) safeSeq[k] = -1;
+                        return false; // no safe sequence found
+                }
+        }
+        return true; // safe sequence found
 }
