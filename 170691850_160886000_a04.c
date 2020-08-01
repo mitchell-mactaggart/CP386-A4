@@ -1,9 +1,25 @@
+/*
+Name: Hassan Siddiqui
+Email: sidd1850@mylaurier.ca
+Student ID: 170691850
+Github Username: Sidd1850
+
+Name: Mitchell MacTaggart
+Email: @mylaurier.ca
+Student ID: 
+GitHub Username: 
+*/
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
 #include <stdbool.h>
 #include <time.h>
+#include <pthread.h>
+#include <sys/stat.h>
+#include <semaphore.h>
+#include "headers.h"
 
 //Variable Declaration
 int n, m, i, j, k, *safeSeq;
