@@ -7,6 +7,7 @@
 
 int n, m, i, j, k, *safeSeq;
 
+
 void request_resource(){
    sleep(1);
    return NULL;
