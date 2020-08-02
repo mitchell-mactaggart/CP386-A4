@@ -64,9 +64,71 @@ int bankers_algoithm(){
 }
 
 
-void request_resource(){
-   sleep(1);
-   return NULL;
+void req_resource(){
+	void requestResource(int TID, int r1, int r2, int r3, int r4, int ct)
+	{
+		if (r1<=rqd[TID].r1 && r2<=rqd[TID].r2 &&
+		r3<=rqd[TID].r3 && r4<=rqd[TID].r4)	
+		{
+			if(r1 <= avail[1] && r2 <= avail[2] && 
+			r3 <= avail[3] && r4 <= avail[4])
+			{
+
+				avail[1] -= r1;
+				avail[2] -= r2;
+				avail[3] -= r3;
+				avail[4] -= r4;
+
+
+				alloc[TID].r1+= r1;
+				alloc[TID].r2+= r2;
+				alloc[TID].r3+= r3;
+				alloc[TID].r4+= r4;
+
+				rqd[TID].r1-= r1;
+				rqd[TID].r2-= r2;
+				rqd[TID].r3-= r3;
+				rqd[TID].r4-= r4;
+
+				int safe = safetyCheck(ct);
+
+				if (safe == 0)
+				{
+					avail[1] += r1;
+					avail[2] += r2;
+					avail[3] += r3;
+					avail[4] += r4;
+
+					alloc[TID].r1-= r1;
+					alloc[TID].r2-= r2;
+					alloc[TID].r3-= r3;
+					alloc[TID].r4-= r4;
+
+					rqd[TID].r1+= r1;
+					rqd[TID].r2+= r2;
+					rqd[TID].r3+= r3;
+					rqd[TID].r4+= r4;	
+					printf("insuffiecient resources, need to wait\n");
+				}
+				else
+				{
+					printf("request complete");
+				}
+				
+
+			}
+			else
+			{
+				printf("cant request resource");
+			}
+			
+		}
+		else
+		{
+			printf("cant request resource");
+		}
+		
+return;
 }
 
 void release_resource(){
@@ -112,7 +174,7 @@ int main(int argc, char *argv[])
     //Prints Available Resources
     printf("Currently Available Resources : " );
     for(int i = 0; i < argc-1; i++){
-            printf("%d ",available[i]);
+            printf("%d ",avail[i]);
     }
     printf("Number of Customers: %d\n", n);
     
@@ -137,7 +199,7 @@ int main(int argc, char *argv[])
 int safetyCheck(int ct){
 	int finish[5] = {1,1,1,1,1};
 	
-	int available_copy[5];
+	int av_cp[5];
 	
 	Customer* alloc_copy = NULL;
 	
@@ -155,7 +217,7 @@ int safetyCheck(int ct){
 		
 		
 		
-		available_copy[i] = available[i];
+		av_cp[i] = available[i];
 	
 	
 	for(x =0; x <ct;x++)
@@ -163,25 +225,25 @@ int safetyCheck(int ct){
 	
 		alloc_copy[x].customerNum = max[x].customerNum;
 		
-		alloc_copy[x].resource1 = alloc[x].resource1;
+		alloc_copy[x].r1 = alloc[x].r1;
 		
-		alloc_copy[x].resource2 = alloc[x].resource2;
+		alloc_copy[x].r2 = alloc[x].r2;
 		
 		
 		
-		alloc_copy[x].resource3 = alloc[x].resource3;
+		alloc_copy[x].r3 = alloc[x].r3;
 		
-		alloc_copy[x].resource4 = alloc[x].resource4;
+		alloc_copy[x].r4 = alloc[x].r4;
 		
 		needed_copy[x].customerNum = max[x].customerNum;
 		
-		needed_copy[x].resource1 = requested[x].resource1;
+		needed_copy[x].r1 = rqd[x].r1;
 		
-		needed_copy[x].resource2 = requested[x].resource2;
+		needed_copy[x].r2 = rqd[x].r2;
 		
-		needed_copy[x].resource3 = requested[x].resource3;
+		needed_copy[x].r3 = rqd[x].r3;
 		
-		needed_copy[x].resource4 = requested[x].resource4;
+		needed_copy[x].r4 = rqd[x].r4;
 	}
 	
 	int sf = 0;
@@ -199,28 +261,28 @@ int safetyCheck(int ct){
 				{
 					if (y ==0)
 					{
-						if (needed_copy[x].resource1 > available_copy[y]) {
+						if (needed_copy[x].r1 > av_cp[y]) {
 							ck = 0;
 							break;
 						}
 					}
 					if (y ==1)
 					{
-						if (needed_copy[x].resource2 > available_copy[y]) {
+						if (needed_copy[x].r2 > av_cp[y]) {
 							ck = 0;
 							break;
 						}
 					}
 					if( y ==2)
 					{
-						if (needed_copy[x].resource3 > available_copy[y]) {
+						if (needed_copy[x].r3 > av_cp[y]) {
 							ck = 0;
 							break;
 						}
 					}
 					if (y ==3)
 					{
-						if (needed_copy[x].resource4 > available_copy[y]) {
+						if (needed_copy[x].r4 > av_cp[y]) {
 							ck = 0;
 							break;
 						}
