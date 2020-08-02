@@ -71,9 +71,9 @@ int fileRead(char* fileName, Customer** max)
 	char* command = NULL;
 	int ct;
 
-	char* fileCopy = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
-	strcpy(fileCopy,fileContent);
-	command = strtok(fileCopy,"\r\n");
+	char* filedup = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
+	strcpy(filedup,fileContent);
+	command = strtok(filedup,"\r\n");
 	while(command!=NULL)
 	{
 		ct++;
@@ -310,6 +310,95 @@ int main(int argc, char *argv[])
 		request[i].r4 = max[i].r4;
 	}
 
+    printf("Number of Customers: %d\n",count);
+
+	printf("Currently available resources: %d %d %d %d\n", available[1],available[2],available[3],available[4]);
+
+	printf("Maximum Resources from file:\n");
+
+	for (i=0; i<count; i++)
+	{
+		printf("%d, %d, %d, %d\n", max[i].resource1,max[i].resource2,max[i].resource3,max[i].resource4);
+	}
+	
+	char line[100];
+	char cmd[2];
+	int threadID=-1;
+	int resource1=-1;
+	int resource2=-1;
+	int resource3=-1;
+	int resource4=-1;
+
+	
+	do {
+        
+		printf("Enter Command: ");
+		fgets(line,100,stdin);
+		char *ptr = strtok(line, " ");
+
+		strcpy(cmd,ptr);
+
+		int j = 0;
+		while(ptr!=NULL)
+		{
+			switch(j){
+				case 1:
+					threadID = atoi(ptr);
+					break;
+				case 2:
+					resource1 = atoi(ptr);
+					break;
+				case 3:
+					resource2 = atoi(ptr);
+					break;
+				case 4:
+					resource3 = atoi(ptr);
+					break;
+				default:
+					resource4 = atoi(ptr);
+			}
+			
+			j++;
+			ptr = strtok(NULL," ");
+		}
+		
+		if (strstr(cmd,"RQ")!=NULL)
+		{
+			printf("process request function\n");
+			printf("%s %d %d %d %d %d \n\n", cmd, threadID, resource1,resource2,resource3,resource4);
+			requestResource(threadID,resource1,resource2,resource3,resource4,count);
+			
+
+		}
+		else if(strstr(cmd,"RL")!=NULL)
+		{
+			printf("process release function\n");
+			printf("%s %d %d %d %d %d \n\n", cmd, threadID, resource1,resource2,resource3,resource4);
+			releaseResource(threadID,resource1,resource2,resource3,resource4);
+		}
+		else if(strstr(cmd,"*")!=NULL)
+		{
+			printf("process/display current state\n");
+			printf("%s\n\n", cmd);
+			outputValues(count);
+
+		}
+		else if(strstr(cmd,"RUN")!=NULL)
+		{
+			printf("run function\n");
+
+			printf("%s\n\n", cmd);
+			runProgram(count);
+		}		
+		else
+		{
+			printf("invalid: 'RQ,RL,* or RUN' are valid\n");
+		}
+		
+
+    } while (1);
+
+
 }
 
 void programOutput(int ct)
@@ -341,57 +430,97 @@ void programOutput(int ct)
 int safetyCheck(int ct){
 	int finish[5] = {1,1,1,1,1};
 	
+<<<<<<< HEAD
 	int av_cp[5];
+=======
+	int available_dup[5];
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 	
-	Customer* alloc_copy = NULL;
+	Customer* alloc_dup = NULL;
 	
-	Customer* needed_copy = NULL;
+	Customer* needed_dup = NULL;
 	
 	
 	
-	alloc_copy = (Customer*) malloc(sizeof(Customer)*ct);
+	alloc_dup = (Customer*) malloc(sizeof(Customer)*ct);
 	
-	needed_copy = (Customer*) malloc(sizeof(Customer)*ct);
+	needed_dup = (Customer*) malloc(sizeof(Customer)*ct);
 	
-	int count_Copy = ct;
+	int count_dup = ct;
 	
 	for(i=1;i<5;i++)
 		
 		
 		
+<<<<<<< HEAD
 		av_cp[i] = available[i];
+=======
+		available_dup[i] = available[i];
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 	
 	
 	for(x =0; x <ct;x++)
 	{
 	
-		alloc_copy[x].customerNum = max[x].customerNum;
+		alloc_dup[x].customerNum = max[x].customerNum;
 		
+<<<<<<< HEAD
 		alloc_copy[x].r1 = alloc[x].r1;
+=======
+		alloc_dup[x].resource1 = alloc[x].resource1;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
+<<<<<<< HEAD
 		alloc_copy[x].r2 = alloc[x].r2;
+=======
+		alloc_dup[x].resource2 = alloc[x].resource2;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
 		
 		
+<<<<<<< HEAD
 		alloc_copy[x].r3 = alloc[x].r3;
+=======
+		alloc_dup[x].resource3 = alloc[x].resource3;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
+<<<<<<< HEAD
 		alloc_copy[x].r4 = alloc[x].r4;
+=======
+		alloc_dup[x].resource4 = alloc[x].resource4;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
-		needed_copy[x].customerNum = max[x].customerNum;
+		needed_dup[x].customerNum = max[x].customerNum;
 		
+<<<<<<< HEAD
 		needed_copy[x].r1 = rqd[x].r1;
+=======
+		needed_dup[x].resource1 = requested[x].resource1;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
+<<<<<<< HEAD
 		needed_copy[x].r2 = rqd[x].r2;
+=======
+		needed_dup[x].resource2 = requested[x].resource2;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
+<<<<<<< HEAD
 		needed_copy[x].r3 = rqd[x].r3;
+=======
+		needed_dup[x].resource3 = requested[x].resource3;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 		
+<<<<<<< HEAD
 		needed_copy[x].r4 = rqd[x].r4;
+=======
+		needed_dup[x].resource4 = requested[x].resource4;
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 	}
 	
 	int sf = 0;
 	int ck = 0;
 	int y;	
-	while(count_Copy>0)
+	while(count_dup>0)
 	{
 		sf = 0;
 		for(x=0;x<5;x++)
@@ -403,28 +532,44 @@ int safetyCheck(int ct){
 				{
 					if (y ==0)
 					{
+<<<<<<< HEAD
 						if (needed_copy[x].r1 > av_cp[y]) {
+=======
+						if (needed_dup[x].resource1 > available_dup[y]) {
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 							ck = 0;
 							break;
 						}
 					}
 					if (y ==1)
 					{
+<<<<<<< HEAD
 						if (needed_copy[x].r2 > av_cp[y]) {
+=======
+						if (needed_dup[x].resource2 > available_dup[y]) {
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 							ck = 0;
 							break;
 						}
 					}
 					if( y ==2)
 					{
+<<<<<<< HEAD
 						if (needed_copy[x].r3 > av_cp[y]) {
+=======
+						if (needed_dup[x].resource3 > available_dup[y]) {
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 							ck = 0;
 							break;
 						}
 					}
 					if (y ==3)
 					{
+<<<<<<< HEAD
 						if (needed_copy[x].r4 > av_cp[y]) {
+=======
+						if (needed_dup[x].resource4 > available_dup[y]) {
+>>>>>>> branch 'master' of https://github.com/mitchell-mactaggart/CP386-A4.git
 							ck = 0;
 							break;
 						}
