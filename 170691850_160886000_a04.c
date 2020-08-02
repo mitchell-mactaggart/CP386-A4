@@ -41,17 +41,32 @@ Customer* r1;
 
 int fileRead(char* fileName, Customer** max)
 {
+	//Reading this fie
+
+
+
 
     FILE *file = fopen(fileName, "r");
 
+	//stat st struct
 	struct stat st;
+
 	fstat(fileno(file), &st);
+
+
+
 	char* fileContent = (char*)malloc(((int)st.st_size+1)* sizeof(char));
+
 	fileContent[0]='\0';
 
+	//CHECKING FOR FILE OPEN
+
 	if (file != NULL)
+
 	{
+
 		char str[1000]; //string buffer
+
 		while (fgets(str, sizeof(str), file) != NULL) //read lines
 		{
 
@@ -68,52 +83,87 @@ int fileRead(char* fileName, Customer** max)
 		perror(fileName); //error
         return -1;
 	}
+
 	char* command = NULL;
+
 	int ct;
 
+
+
 	char* filedup = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
+
 	strcpy(filedup,fileContent);
+
 	command = strtok(filedup,"\r\n");
+
 	while(command!=NULL)
+
 	{
+
 		ct++;
+
 		command = strtok(NULL,"\r\n");
 	}
 	*max = (Customer*) malloc(sizeof(Customer)*ct);
 
+	//COntinueing fileopen
+
 	char* lines[ct];
+
 	command = NULL;
+
 	int i=0;
+
 	command = strtok(fileContent,"\r\n");
+
 	while(command!=NULL)
+
 	{
+
+
 		lines[i] = malloc(sizeof(command)*sizeof(char));
+
 		strcpy(lines[i],command);
+
 		i++;
+
 		command = strtok(NULL,"\r\n");
 	}
 
 	for(int k=0; k<ct; k++)
 	{
+
 		char* token = NULL;
+
 		int j = 0;
 		int cID=0;
+
 		token =  strtok(lines[k],",");
+
 		while(token!=NULL)
 		{
+			f
 			switch(j){
 				(*max)[k].customerNum = cID;
 				cID++;
 				case 0:
+
+
 					(*max)[k].r1 = atoi(token);
+
 					break;
 				case 1:
+
 					(*max)[k].r2 = atoi(token);
+
 					break;
 				case 2:
+
 					(*max)[k].r3 = atoi(token);
+
 					break;
 				default:
+
 					(*max)[k].r4 = atoi(token);
 
 			}
