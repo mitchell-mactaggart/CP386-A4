@@ -16,6 +16,7 @@ GitHub Username: mitchell-macTaggart
 #include <pthread.h>
 #include <stdbool.h>
 #include <time.h>
+#include <pthread.h>
 #include <sys/stat.h>
 #include <semaphore.h>
 #include "headers.h"
@@ -131,42 +132,80 @@ int main(int argc, char *argv[])
 
 }
 
-bool getSafeSeq() {
-	// get safe sequence
-        int tempRes[n];
-        for(int i=0; i<n; i++) tempRes[i] = resources[i];
 
-        bool finished[m];
-        for(int i=0; i<m; i++) finished[i] = false;
-        int nfinished=0;
-        while(nfinished < m) {
-                bool safe = false;
 
-                for(int i=0; i<m; i++) {
-                        if(!finished[i]) {
-                                bool possible = true;
-
-                                for(int j=0; j<n; j++)
-                                        if(need[i][j] > tempRes[j]) {
-                                                possible = false;
-                                                break;
-                                        }
-
-                                if(possible) {
-                                        for(int j=0; j<n; j++)
-                                                tempRes[j] += allocated[i][j];
-                                        safeSeq[nfinished] = i;
-                                        finished[i] = true;
-                                        ++nfinished;
-                                        safe = true;
-                                }
-                        }
-                }
-
-                if(!safe) {
-                        for(int k=0; k<m; k++) safeSeq[k] = -1;
-                        return false; // no safe sequence found
-                }
-        }
-        return true; // safe sequence found
+int safetyCheck(int count){
+	int finish[5] = {1,1,1,1,1};
+	int available_copy[5];
+	Customer* alloc_copy = NULL;
+	Customer* needed_copy = NULL;
+	alloc_copy = (Customer*) malloc(sizeof(Customer)*count);
+	needed_copy = (Customer*) malloc(sizeof(Customer)*count);
+	int count_Copy = count;
+	for(i=1;i<5;i++)
+		available_copy[i] = available[i];
+	for(i =0; i <count;i++)
+	{
+		alloc_copy[i].customerNum = max[i].customerNum;
+		alloc_copy[i].resource1 = alloc[i].resource1;
+		alloc_copy[i].resource2 = alloc[i].resource2;
+		alloc_copy[i].resource3 = alloc[i].resource3;
+		alloc_copy[i].resource4 = alloc[i].resource4;
+		needed_copy[i].customerNum = max[i].customerNum;
+		needed_copy[i].resource1 = requested[i].resource1;
+		needed_copy[i].resource2 = requested[i].resource2;
+		needed_copy[i].resource3 = requested[i].resource3;
+		needed_copy[i].resource4 = requested[i].resource4;
+	}
+	int safe = 0;
+	int check = 0;
+	int j;	
+	while(count_Copy>0)
+	{
+		safe = 0;
+		for(i=0;i<5;i++)
+		{
+			if (finish[i]==1)
+			{
+				check = 1;
+				for (j=1;j<5;j++)
+				{
+					if (j ==0)
+					{
+						if (needed_copy[i].resource1 > available_copy[j]) {
+							check = 0;
+							break;
+						}
+					}
+					if (j ==1)
+					{
+						if (needed_copy[i].resource2 > available_copy[j]) {
+							check = 0;
+							break;
+						}
+					}
+					if( j ==2)
+					{
+						if (needed_copy[i].resource3 > available_copy[j]) {
+							check = 0;
+							break;
+						}
+					}
+					if (j ==3)
+					{
+						if (needed_copy[i].resource4 > available_copy[j]) {
+							check = 0;
+							break;
+						}
+					}
+				}
+			}	
+		}
+		if (safe == 0)
+		{
+			printf("not safe\n");
+			break;
+		}
+	}
+	return safe;
 }
