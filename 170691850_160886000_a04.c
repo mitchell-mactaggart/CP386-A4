@@ -137,25 +137,44 @@ void release_resource(){
   return NULL;
 }
 
-void set_max_resources(){
-    //Opening File.
-    FILE * fp;
-    fp = fopen("sample4_in.txt","r");
+int* fileRead(int val[2])
+    {  
+        int number;
+        int rowx = 0;
+        int colx = 0;
+        char *point;
+        int ctr = 0;
+        char buffer[256];
+        size_t line;
+        //Read File
+        FILE *fp = fopen("sample4_in.txt","r");
+        //check if its not null (was found)
+        if (fp != NULL){
+            line = 0;
+            while((point = fgets(buffer,sizeof(buffer), fp)) != NULL){
+                size_t field;
+                char * token;
+                field = 0;
+                while((token = strtok(point, ",")) != NULL)
+                {
+                    field+=1;
+                    if (ctr < 1){
+                        colx+=1;
+                    }
+                    point = NULL;  
+                }
+                ctr+=1;
+                line+=1;
+                rowx+=1;               
+            }
 
-    for (c = getc(fp); c != EOF; c = getc(fp)) 
-        if (c == '\n')
-            n = n + 1; 
-    
-    int max[n][4];
-    int i,j;
-
-    for(i=0; i<=n; i++) {
-        for(j=0; j<12; j++) {
-            fscanf(fp, " %i", &max[i][j]);;
         }
+       
+       val[0] = rowx;
+       val[1] = colx;
+       return val;  
     }
-
-}
+   
 
 int main(int argc, char *argv[]) 
 { 
@@ -165,7 +184,9 @@ int main(int argc, char *argv[])
 		printf("Argument Not Found");
 		exit(1);
 	}
-    
+	 int val[2];   
+	 int rw = fileRead(val)[0];
+	 int col = fileRead(val)[1];
     
     //Takes user input on available resources from command line in string and converts to int
     for(int i = 1; i < argc; i++){
