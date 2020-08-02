@@ -11,39 +11,70 @@ GitHub Username: mitchell-macTaggart
 */
 
 #include<stdio.h>
+
 #include <semaphore.h>
+
 #include <unistd.h>
+
 #include <string.h>
+
 #include <stdlib.h>
+
 #include <sys/stat.h>
+
 #include <pthread.h>
+
 #include <time.h>
 
 
 typedef struct customer
 {
+
 	int customerNum, r1, r2, r3, r4;
 } Customer;
 
 void ProgramOutput(int ct);
+
 int safetyCheck(int ct);
+
 int fileRead(char* fileName, Customer** customer);
+
 void runProgram(int ct);
+
 void *runThread(void *thread);
+
 void requestResource(int threadID, int r1, int r2, int r3, int r4, int ct);
 
 
+
+
+
 //Variable Declaration
+
+
+
 int avail[5];
+
 int i;
+
 int safeSeq[5];
+
 Customer* max;
+
 Customer* alloc;
+
+
+
+
 Customer* request;
 
 int main(int argc, char *argv[])
 {
+
 	char *fileName ="sample4_in.txt";
+
+
+
 
 	if(argc!=5)
 	{
@@ -58,14 +89,21 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	 int val[2];
-	 int rw = fileRead(val)[0];
-	 int col = fileRead(val)[1];
+	int val[2];
 
-    for(int i = 1; i < argc; i++){
+	int rw = fileRead(val)[0];
+
+	int col = fileRead(val)[1];
+
+	for (int i = 1; i < argc; i++) {
            avail[i-1] = atoi(argv[i]);
     }
     printf("Currently Available Resources : " );
+
+
+
+
+
     for(int i = 0; i < argc-1; i++){
             printf("%d ",avail[i]);
     }
@@ -75,19 +113,34 @@ int main(int argc, char *argv[])
 
 
     int ct = fileRead(fileName,&max);
-	request = (Customer*) malloc(sizeof(Customer)*ct);
+
+	request = (Customer*) malloc(sizeof(Customer) * ct);
+
     alloc = (Customer*) malloc(sizeof(Customer)*ct);
+
     for(i =0; i <ct;i++)
+
 	{
 		alloc[i].customerNum = max[i].customerNum;
+
+
 		alloc[i].r1 = 0;
+
 		alloc[i].r2 = 0;
+		//
 		alloc[i].r3 = 0;
+
+
 		alloc[i].r4 = 0;
 
+
+
 		request[i].customerNum = max[i].customerNum;
+
 		request[i].r1 = max[i].r1;
+
 		request[i].r2 = max[i].r2;
+		//ss
 		request[i].r3 = max[i].r3;
 		request[i].r4 = max[i].r4;
 	}
@@ -102,16 +155,24 @@ int main(int argc, char *argv[])
 	{
 		printf("%d, %d, %d, %d\n", max[i].r1,max[i].r2,max[i].r3,max[i].r4);
 	}
-
+	//variables
 	char line[100];
+
 	char cmd[2];
+
 	int threadID=-1;
+
 	int r1=-1;
+
 	int r2=-1;
+
 	int r3=-1;
+
 	int r4=-1;
 
 
+
+	//loop for intializing
 	do {
 
 		printf("Enter Command: ");
@@ -121,6 +182,7 @@ int main(int argc, char *argv[])
 		strcpy(cmd,ptr);
 
 		int j = 0;
+		//loop for case
 		while(ptr!=NULL)
 		{
 			switch(j){
@@ -353,7 +415,7 @@ void runProgram(int ct)
 			pthread_join(threadID, NULL);
 		}
 	}
-	
+
 
 	return;
 
