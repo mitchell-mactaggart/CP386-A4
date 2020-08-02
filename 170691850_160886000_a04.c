@@ -23,7 +23,7 @@ GitHub Username: mitchell-macTaggart
 
 //Variable Declaration
 int n, m, i, j, k, *safeSeq;
-char tmp[256];
+int MAX = 200;
 
 int bankers_algoithm(){
 
@@ -97,13 +97,13 @@ void set_max_resources(){
 
 int main(int argc, char *argv[]) 
 { 
+	int avail[MAX]
 	//Command Line Arguments
 	if(argc <2){
 		printf("Argument Not Found");
 		exit(1);
 	}
     
-    int avail[4] = { 10, 5, 7, 8 }; // Available Resources
     
     //Takes user input on available resources from command line in string and converts to int
     for(int i = 1; i < argc; i++){
