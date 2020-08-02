@@ -139,26 +139,6 @@ void release_resource(){
   return NULL;
 }
 
-void set_max_resources(){
-    //Opening File.
-    FILE * fp;
-    fp = fopen("sample4_in.txt","r");
-
-    for (c = getc(fp); c != EOF; c = getc(fp)) 
-        if (c == '\n')
-            n = n + 1; 
-    
-    int max[n][4];
-    int i,j;
-
-    for(i=0; i<=n; i++) {
-        for(j=0; j<12; j++) {
-            fscanf(fp, " %i", &max[i][j]);;
-        }
-    }
-
-}
-
 int main(int argc, char *argv[]) 
 { 
 	char *fileName ="sample4_in.txt";
@@ -176,31 +156,23 @@ int main(int argc, char *argv[])
 		}
 	}
     
-    
-    //Takes user input on available resources from command line in string and converts to int
-    for(int i = 1; i < argc; i++){
-           avail[i-1] = atoi(argv[i]);
-    }
-    //Prints Available Resources
-    printf("Currently Available Resources : " );
-    for(int i = 0; i < argc-1; i++){
-            printf("%d ",available[i]);
-    }
-    printf("Number of Customers: %d\n", n);
-    
-    //ask for currently avaialbe resources
-    printf("Currently Available Resources : " );
+    int count = fileRead(fileName,&max);
+	request = (Customer*) malloc(sizeof(Customer)*count);
+    alloc = (Customer*) malloc(sizeof(Customer)*count);
+    for(i =0; i <count;i++)
+	{
+		alloc[i].customerNum = max[i].customerNum;
+		alloc[i].resource1 = 0;
+		alloc[i].resource2 = 0;
+		alloc[i].resource3 = 0;
+		alloc[i].resource4 = 0;
 
-    printf("Maximum resources from file:\n");
-    for(i=0; i<m; i++) {
-        for(j=0; j<n; j++) {
-            printf("%c",max[i][j]);
-        }
-    }
-
-    printf("Enter Command:");
-    scanf("%s",command);
-    printf("%s \n",command);
+		request[i].customerNum = max[i].customerNum;
+		request[i].resource1 = max[i].resource1;
+		request[i].resource2 = max[i].resource2;
+		request[i].resource3 = max[i].resource3;
+		request[i].resource4 = max[i].resource4;
+	}
 
 }
 
