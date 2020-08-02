@@ -22,76 +22,98 @@ GitHub Username: mitchell-macTaggart
 
 typedef struct customer
 {
-	int customerNum, resource1, resource2, resource3, resource4;
+	int customerNum, r1, r2, r3, r4;
 } Customer;
 
-void ProgramOutput(int count);
-int safetyCheck(int count);
+void ProgramOutput(int ct);
+int safetyCheck(int ct);
 int fileRead(char* fileName, Customer** customer);
 void runProgram(int count);
 void *runThread(void *thread);
-void requestResource(int threadID, int resource1, int resource2, int resource3, int resource4, int count);
-void releaseResource(int threadID, int resource1, int resource2, int resource3, int resource4);
 
 
 //Variable Declaration
-int available[5];
+int avail[5];
 int i;
 int safeSeq[5];
 Customer* max;
 Customer* alloc;
-Customer* request; 
+Customer* request;
 
 
-int main(int argc, char *argv[]) 
-{ 
+int main(int argc, char *argv[])
+{
 	char *fileName ="sample4_in.txt";
 
-    for (i=1; i<argc; i++)
-    {
-        available[i]=atoi(argv[i]);
+	if(argc!=5)
+	{
+		printf("INVALID: 4 values only\n");
+		return -1;
+	}
+	else
+	{
+		for (i=1; i<argc; i++)
+		{
+			avail[i]=atoi(argv[i]);
+		}
+	}
+
+	 int val[2];
+	 int rw = fileRead(val)[0];
+	 int col = fileRead(val)[1];
+
+    for(int i = 1; i < argc; i++){
+           avail[i-1] = atoi(argv[i]);
     }
-    
-    int count = fileRead(fileName,&max);
-	request = (Customer*) malloc(sizeof(Customer)*count);
-    alloc = (Customer*) malloc(sizeof(Customer)*count);
-    for(i =0; i <count;i++)
+    printf("Currently Available Resources : " );
+    for(int i = 0; i < argc-1; i++){
+            printf("%d ",avail[i]);
+    }
+    printf("Number of Customers: %d\n", n);
+
+    printf("Currently Available Resources : " );
+
+
+    int ct = fileRead(fileName,&max);
+	request = (Customer*) malloc(sizeof(Customer)*ct);
+    alloc = (Customer*) malloc(sizeof(Customer)*ct);
+    for(i =0; i <ct;i++)
 	{
 		alloc[i].customerNum = max[i].customerNum;
-		alloc[i].resource1 = 0;
-		alloc[i].resource2 = 0;
-		alloc[i].resource3 = 0;
-		alloc[i].resource4 = 0;
+		alloc[i].r1 = 0;
+		alloc[i].r2 = 0;
+		alloc[i].r3 = 0;
+		alloc[i].r4 = 0;
 
 		request[i].customerNum = max[i].customerNum;
-		request[i].resource1 = max[i].resource1;
-		request[i].resource2 = max[i].resource2;
-		request[i].resource3 = max[i].resource3;
-		request[i].resource4 = max[i].resource4;
+		request[i].r1 = max[i].r1;
+		request[i].r2 = max[i].r2;
+		request[i].r3 = max[i].r3;
+		request[i].r4 = max[i].r4;
 	}
 
     printf("Number of Customers: %d\n",count);
 
-	printf("Currently available resources: %d %d %d %d\n", available[1],available[2],available[3],available[4]);
+	printf("Currently avail resources: %d %d %d %d\n", avail[1],avail[2],avail[3],avail[4]);
 
 	printf("Maximum Resources from file:\n");
 
 	for (i=0; i<count; i++)
 	{
-		printf("%d, %d, %d, %d\n", max[i].resource1,max[i].resource2,max[i].resource3,max[i].resource4);
+		printf("%d, %d, %d, %d\n", max[i].r1,max[i].r2,max[i].r3,max[i].r4);
 	}
-	
+
 	char line[100];
 	char cmd[2];
 	int threadID=-1;
-	int resource1=-1;
-	int resource2=-1;
-	int resource3=-1;
-	int resource4=-1;
+	int r1=-1;
+	int r2=-1;
+	int r3=-1;
+	int r4=-1;
 
-	
+
 	do {
-        
+
 		printf("Enter Command: ");
 		fgets(line,100,stdin);
 		char *ptr = strtok(line, " ");
@@ -117,24 +139,24 @@ int main(int argc, char *argv[])
 				default:
 					resource4 = atoi(ptr);
 			}
-			
+
 			j++;
 			ptr = strtok(NULL," ");
 		}
-		
+
 		if (strstr(cmd,"RQ")!=NULL)
 		{
 			printf("process request function\n");
-			printf("%s %d %d %d %d %d \n\n", cmd, threadID, resource1,resource2,resource3,resource4);
-			requestResource(threadID,resource1,resource2,resource3,resource4,count);
-			
+			printf("%s %d %d %d %d %d \n\n", cmd, threadID, r1,r2,r3,r4);
+			requestR(threadID,r1,r2,r3,r4,count);
+
 
 		}
 		else if(strstr(cmd,"RL")!=NULL)
 		{
 			printf("process release function\n");
-			printf("%s %d %d %d %d %d \n\n", cmd, threadID, resource1,resource2,resource3,resource4);
-			releaseResource(threadID,resource1,resource2,resource3,resource4);
+			printf("%s %d %d %d %d %d \n\n", cmd, threadID, r1,r2,r3,r4);
+			releaseR(threadID,r1,r2,r3,r4);
 		}
 		else if(strstr(cmd,"*")!=NULL)
 		{
@@ -149,271 +171,116 @@ int main(int argc, char *argv[])
 
 			printf("%s\n\n", cmd);
 			runProgram(count);
-		}		
+		}
 		else
 		{
 			printf("invalid: 'RQ,RL,* or RUN' are valid\n");
 		}
-		
+
 
     } while (1);
 
 
 }
 
-void runProgram(int count)
-{
+void programOutput(int ct)
 
-	int k=safetyAlgorithm(count);
-	if (k==0)
+{
+	printf("Currently avail rs: %d %d %d %d\n", avail[1],avail[2],avail[3],avail[4]);
+	printf("Maximum Rs from file:\n");
+
+	for (i=0; i<ct; i++)
 	{
-		printf("UNSAFE\n");
-		return;
-	}
-	else{
-
-		for (i=0;i<count;i++){ //create and execute threads
-			int runnable = safeSeq[i];
-
-			pthread_t threadID;
-			pthread_attr_t newThread;
-			pthread_attr_init(&newThread);
-
-			pthread_create(&threadID, &newThread, runThread, (void *)&runnable);
-
-
-			pthread_join(threadID, NULL);
-		}
-	}
-	
-
-	return;
-
-}
-
-void *runThread(void *thread)
-{
-	int *tid = (int*)thread;
-
-	printf("-> Customer #: %d\n", *tid);
-
-	printf("	Allocated Resources: ");
-	printf("%d ",alloc[*tid].resource1);
-	printf("%d ",alloc[*tid].resource2);
-	printf("%d ",alloc[*tid].resource3);
-	printf("%d\n",alloc[*tid].resource4);
-	printf("	Needed Resources: ");
-	printf("%d ",requested[*tid].resource1);
-	printf("%d ",requested[*tid].resource2);
-	printf("%d ",requested[*tid].resource3);
-	printf("%d\n",requested[*tid].resource4);
-	printf("	Available Resources: ");
-	printf("%d ",available[1]);
-	printf("%d ",available[2]);
-	printf("%d ",available[3]);
-	printf("%d\n",available[4]);
-
-	printf("	Thread has started \n");
-	sleep(2);
-	printf("	Thread has finished \n");
-	sleep(2);
-	printf("	Thread is releasing resources \n");
-
-	printf("	NEW AVAILABLE: ");
-
-	available[1]+=alloc[*tid].resource1;
-	printf("%d ",available[1]);
-	available[2]+=alloc[*tid].resource2;
-	printf("%d ",available[2]);
-	available[3]+=alloc[*tid].resource3;
-	printf("%d ",available[3]);
-	available[4]+=alloc[*tid].resource4;
-	printf("%d\n\n",available[4]);
-    sleep(2);
-
-	alloc[0].resource1=0;
-	alloc[1].resource2=0;
-	alloc[2].resource3=0;
-	alloc[3].resource4=0;
-
-	requested[0].resource1 = max[0].resource1;
-	requested[1].resource2 = max[1].resource2;
-	requested[2].resource3 = max[2].resource3;
-	requested[3].resource4 = max[3].resource4;
-
-	pthread_exit(0);
-
-}
-
-
-
-void programOutput(int count)
-
-{
-	printf("Currently available resources: %d %d %d %d\n", available[1],available[2],available[3],available[4]);
-	printf("Maximum Resources from file:\n");
-
-	for (i=0; i<count; i++)
-	{
-		printf("%d, %d, %d, %d\n", max[i].resource1,max[i].resource2,max[i].resource3,max[i].resource4);
+		printf("%d, %d, %d, %d\n", max[i].r1,max[i].r2,max[i].r3,max[i].r4);
 	}
 
 	printf("current alloc\n");
-	for (i=0; i<count; i++)
+	for (i=0; i<ct; i++)
 	{
-		printf("%d, %d, %d, %d\n", alloc[i].resource1,alloc[i].resource2,alloc[i].resource3,alloc[i].resource4);
+		printf("%d, %d, %d, %d\n", alloc[i].r1,alloc[i].r2,alloc[i].r3,alloc[i].r4);
 	}
 
 	printf("still needed\n");
-	for (i=0; i<count; i++)
+	for (i=0; i<ct; i++)
 	{
-		printf("%d, %d, %d, %d\n", requested[i].resource1,requested[i].resource2,requested[i].resource3,requested[i].resource4);
+		printf("%d, %d, %d, %d\n", rqd[i].r1,rqd[i].r2,rqd[i].r3,rqd[i].r4);
 	}
 	return;
 }
 
-int fileRead(char* fileName, Customer** max)
+int fileRead(char* fileName, int max[5][4])
 {
 	
-    FILE *file = fopen(fileName, "r");
+   FILE * fp;
+    fp = fopen("sample4_in.txt","r");
 
-	struct stat st;
-	fstat(fileno(file), &st);
-	char* fileContent = (char*)malloc(((int)st.st_size+1)* sizeof(char));
-	fileContent[0]='\0';
+    for (c = getc(fp); c != EOF; c = getc(fp)) 
+        if (c == '\n')
+            n = n + 1; 
+    
+    int i,j;
 
-	if (file != NULL)
-	{
-		char str[1000]; //string buffer
-		while (fgets(str, sizeof(str), file) != NULL) //read lines
-		{
-
-            strncat(fileContent,str,strlen(str));
-			
-		}
-		fclose(file);
-
-		
-
-	}
-	else
-	{
-		perror(fileName); //error
-        return -1;
-	}
-	char* command = NULL;
-	int count;
-
-	char* filedup = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
-	strcpy(filedup,fileContent);
-	command = strtok(filedup,"\r\n");
-	while(command!=NULL)
-	{
-		count++;
-		command = strtok(NULL,"\r\n");
-	}
-	*max = (Customer*) malloc(sizeof(Customer)*count);
-
-	char* lines[count];
-	command = NULL;
-	int i=0;
-	command = strtok(fileContent,"\r\n");
-	while(command!=NULL)
-	{
-		lines[i] = malloc(sizeof(command)*sizeof(char));
-		strcpy(lines[i],command);
-		i++;
-		command = strtok(NULL,"\r\n");
-	}
-
-	for(int k=0; k<count; k++)
-	{
-		char* token = NULL;
-		int j = 0;
-		int cID=0;
-		token =  strtok(lines[k],",");
-		while(token!=NULL)
-		{
-			switch(j){
-				(*max)[k].customerNum = cID;
-				cID++;
-				case 0:
-					(*max)[k].resource1 = atoi(token);
-					break;
-				case 1:
-					(*max)[k].resource2 = atoi(token);
-					break;
-				case 2:
-					(*max)[k].resource3 = atoi(token);
-					break;
-				default:
-					(*max)[k].resource4 = atoi(token);
-					
-			}
-			
-			j++;
-			token = strtok(NULL,",");
-		}
-	}
-	return count;
-	
-
+    for(i=0; i<=n; i++) {
+        for(j=0; j<12; j++) {
+            fscanf(fp, " %i", &max[i][j]);;
+        }
+    }
+	return 0;
 }
 
 
 int safetyCheck(int ct){
 	int finish[5] = {1,1,1,1,1};
-	
-	int available_dup[5];
-	
+
+	int av_cp[5];
+
 	Customer* alloc_dup = NULL;
-	
+
 	Customer* needed_dup = NULL;
-	
-	
-	
+
+
+
 	alloc_dup = (Customer*) malloc(sizeof(Customer)*ct);
-	
+
 	needed_dup = (Customer*) malloc(sizeof(Customer)*ct);
-	
+
 	int count_dup = ct;
-	
+
 	for(i=1;i<5;i++)
-		
-		
-		
-		available_dup[i] = available[i];
-	
-	
+
+
+
+
+		av_cp[i] = avail[i];
+
+
 	for(x =0; x <ct;x++)
 	{
-	
+
 		alloc_dup[x].customerNum = max[x].customerNum;
-		
-		alloc_dup[x].resource1 = alloc[x].resource1;
-		
-		alloc_dup[x].resource2 = alloc[x].resource2;
-		
-		
-		
-		alloc_dup[x].resource3 = alloc[x].resource3;
-		
-		alloc_dup[x].resource4 = alloc[x].resource4;
-		
+
+		alloc_dup[x].r1 = alloc[x].r1;
+
+		alloc_dup[x].r2 = alloc[x].r2;
+
+		alloc_dup[x].r3 = alloc[x].r3;
+
+		alloc_dup[x].r4 = alloc[x].r4;
+
 		needed_dup[x].customerNum = max[x].customerNum;
-		
-		needed_dup[x].resource1 = requested[x].resource1;
-		
-		needed_dup[x].resource2 = requested[x].resource2;
-		
-		needed_dup[x].resource3 = requested[x].resource3;
-		
-		needed_dup[x].resource4 = requested[x].resource4;
+
+		needed_dup[x].r1 = rqd[x].r1;
+
+		needed_dup[x].r2 = rqd[x].r2;
+
+		needed_dup[x].r3 = rqd[x].r3;
+
+		needed_dup[x].r4 = rqd[x].r4;
 	}
-	
+
 	int sf = 0;
 	int ck = 0;
-	int y;	
+	int y;
 	while(count_dup>0)
 	{
 		sf = 0;
@@ -426,44 +293,48 @@ int safetyCheck(int ct){
 				{
 					if (y ==0)
 					{
-						if (needed_dup[x].resource1 > available_dup[y]) {
+						if (needed_dup[x].r1 > av_cp[y]) {
 							ck = 0;
 							break;
 						}
 					}
 					if (y ==1)
 					{
-						if (needed_dup[x].resource2 > available_dup[y]) {
+						if (needed_dup[x].r2 > av_cp[y]) {
 							ck = 0;
 							break;
 						}
 					}
 					if( y ==2)
 					{
-						if (needed_dup[x].resource3 > available_dup[y]) {
+
+						if (needed_dup[x].r3 > av_cp[y]) {
+
 							ck = 0;
 							break;
 						}
 					}
 					if (y ==3)
 					{
-						if (needed_dup[x].resource4 > available_dup[y]) {
+
+						if (needed_dup[x].r4 > av_cp[y]) {
+
 							ck = 0;
 							break;
 						}
 					}
 				}
-			}	
+			}
 		}
 		if (sf == 0)
-	
+
 		{
-		
+
 			printf("not safe\n");
-			
+
 			break;
 		}
 	}
-	
+
 	return sf;
 }
