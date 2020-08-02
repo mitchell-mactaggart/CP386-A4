@@ -39,6 +39,7 @@ int i;
 int safeSeq[5];
 Customer* max;
 Customer* alloc;
+Customer* request;
 
 int main(int argc, char *argv[])
 {
