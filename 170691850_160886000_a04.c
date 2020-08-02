@@ -140,22 +140,38 @@ void release_resource(){
 int* fileRead(int val[2])
     {  
         int number;
+        
         int rowx = 0;
+        
         int colx = 0;
+        
         char *point;
+        
         int ctr = 0;
+        
         char buffer[256];
+        
         size_t line;
-        //Read File
+        
+        
+        
         FILE *fp = fopen("sample4_in.txt","r");
-        //check if its not null (was found)
+        
+                
+        
         if (fp != NULL){
-            line = 0;
-            while((point = fgets(buffer,sizeof(buffer), fp)) != NULL){
-                size_t field;
-                char * token;
-                field = 0;
-                while((token = strtok(point, ",")) != NULL)
+        
+        	line = 0;
+            
+        	while((point = fgets(buffer,sizeof(buffer), fp)) != NULL){
+            
+        		size_t field;
+                
+        		char * token;
+                
+        		field = 0;
+                
+        		while((token = strtok(point, ",")) != NULL)
                 {
                     field+=1;
                     if (ctr < 1){
