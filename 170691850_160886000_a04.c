@@ -36,7 +36,7 @@ int i;
 int safeSeq[5];
 Customer* max;
 Customer* alloc;
-Customer* request;
+Customer* r1;
 
 
 int fileRead(char* fileName, Customer** max)
@@ -318,16 +318,17 @@ int main(int argc, char *argv[])
 
 	for (i=0; i<count; i++)
 	{
-		printf("%d, %d, %d, %d\n", max[i].resource1,max[i].resource2,max[i].resource3,max[i].resource4);
+			printf("%d, %d, %d, %d\n", max[i].r1, max[i].r2, max[i].r3,
+					max[i].r4);
 	}
 
 	char line[100];
 	char cmd[2];
-	int threadID=-1;
-	int resource1=-1;
-	int resource2=-1;
-	int resource3=-1;
-	int resource4=-1;
+		int tid = -1;
+		int r1 = -1;
+		int r2 = -1;
+		int r3 = -1;
+		int r4 = -1;
 
 
 	do {
@@ -343,19 +344,19 @@ int main(int argc, char *argv[])
 		{
 			switch(j){
 				case 1:
-					threadID = atoi(ptr);
+					tid = atoi(ptr);
 					break;
 				case 2:
-					resource1 = atoi(ptr);
+					r1 = atoi(ptr);
 					break;
 				case 3:
-					resource2 = atoi(ptr);
+					r2 = atoi(ptr);
 					break;
 				case 4:
-					resource3 = atoi(ptr);
+					r3 = atoi(ptr);
 					break;
 				default:
-					resource4 = atoi(ptr);
+					r4 = atoi(ptr);
 			}
 
 			j++;
@@ -365,16 +366,16 @@ int main(int argc, char *argv[])
 		if (strstr(cmd,"RQ")!=NULL)
 		{
 			printf("process request function\n");
-			printf("%s %d %d %d %d %d \n\n", cmd, threadID, resource1,resource2,resource3,resource4);
-			requestResource(threadID,resource1,resource2,resource3,resource4,count);
+				printf("%s %d %d %d %d %d \n\n", cmd, tid, r1, r2, r3, r4);
+				requestResource(tid, r1, r2, r3, r4, count);
 
 
 		}
 		else if(strstr(cmd,"RL")!=NULL)
 		{
 			printf("process release function\n");
-			printf("%s %d %d %d %d %d \n\n", cmd, threadID, resource1,resource2,resource3,resource4);
-			releaseResource(threadID,resource1,resource2,resource3,resource4);
+				printf("%s %d %d %d %d %d \n\n", cmd, tid, r1, r2, r3, r4);
+				releaseResource(tid, r1, r2, r3, r4);
 		}
 		else if(strstr(cmd,"*")!=NULL)
 		{
