@@ -10,15 +10,16 @@ Student ID: 160886000
 GitHub Username: mitchell-macTaggart
 */
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <stdbool.h>
-#include <time.h>
-#include <sys/stat.h>
+#include<stdio.h>
 #include <semaphore.h>
-#include "headers.h"
+#include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
+#include <sys/stat.h>
+#include <pthread.h>
+#include <time.h>
+
+void ProgramOutput(int count);
 
 //Variable Declaration
 int n, m, i, j, k, *safeSeq;
@@ -57,6 +58,11 @@ int bankers_algoithm(){
             } 
         } 
     } 
+
+        printf("Following is the SAFE Sequence\n"); 
+    for (i = 0; i < n - 1; i++) 
+        printf(" P%d ->", ans[i]); 
+    printf(" P%d", ans[n - 1]); 
   
     return (0); 
 
@@ -96,11 +102,19 @@ void set_max_resources(){
 
 int main(int argc, char *argv[]) 
 { 
-	int avail[MAX]
-	//Command Line Arguments
-	if(argc <2){
-		printf("Argument Not Found");
-		exit(1);
+	char *fileName ="sample4_in.txt";
+
+	if(argc!=5)
+	{
+		printf("INVALID: 4 values only\n");
+		return -1;
+	}
+	else
+	{
+		for (i=1; i<argc; i++)
+		{
+			available[i]=atoi(argv[i]);
+		}
 	}
     
     
@@ -131,42 +145,27 @@ int main(int argc, char *argv[])
 
 }
 
-bool getSafeSeq() {
-	// get safe sequence
-        int tempRes[n];
-        for(int i=0; i<n; i++) tempRes[i] = resources[i];
+void programOutput(int count)
 
-        bool finished[m];
-        for(int i=0; i<m; i++) finished[i] = false;
-        int nfinished=0;
-        while(nfinished < m) {
-                bool safe = false;
+{
+	printf("Currently available resources: %d %d %d %d\n", available[1],available[2],available[3],available[4]);
+	printf("Maximum Resources from file:\n");
 
-                for(int i=0; i<m; i++) {
-                        if(!finished[i]) {
-                                bool possible = true;
+	for (i=0; i<count; i++)
+	{
+		printf("%d, %d, %d, %d\n", max[i].resource1,max[i].resource2,max[i].resource3,max[i].resource4);
+	}
 
-                                for(int j=0; j<n; j++)
-                                        if(need[i][j] > tempRes[j]) {
-                                                possible = false;
-                                                break;
-                                        }
+	printf("current alloc\n");
+	for (i=0; i<count; i++)
+	{
+		printf("%d, %d, %d, %d\n", alloc[i].resource1,alloc[i].resource2,alloc[i].resource3,alloc[i].resource4);
+	}
 
-                                if(possible) {
-                                        for(int j=0; j<n; j++)
-                                                tempRes[j] += allocated[i][j];
-                                        safeSeq[nfinished] = i;
-                                        finished[i] = true;
-                                        ++nfinished;
-                                        safe = true;
-                                }
-                        }
-                }
-
-                if(!safe) {
-                        for(int k=0; k<m; k++) safeSeq[k] = -1;
-                        return false; // no safe sequence found
-                }
-        }
-        return true; // safe sequence found
+	printf("still needed\n");
+	for (i=0; i<count; i++)
+	{
+		printf("%d, %d, %d, %d\n", requested[i].resource1,requested[i].resource2,requested[i].resource3,requested[i].resource4);
+	}
+	return;
 }
