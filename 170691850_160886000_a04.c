@@ -28,6 +28,10 @@ typedef struct customer
 void ProgramOutput(int count);
 int safetyCheck(int count);
 int fileRead(char* fileName, Customer** customer);
+void runProgram(int count);
+void *runThread(void *thread);
+void requestResource(int threadID, int resource1, int resource2, int resource3, int resource4, int count);
+void releaseResource(int threadID, int resource1, int resource2, int resource3, int resource4);
 
 
 //Variable Declaration
@@ -39,122 +43,14 @@ Customer* alloc;
 Customer* request; 
 
 
-int fileRead(char* fileName, Customer** max)
-{
-	
-    FILE *file = fopen(fileName, "r");
-
-	struct stat st;
-	fstat(fileno(file), &st);
-	char* fileContent = (char*)malloc(((int)st.st_size+1)* sizeof(char));
-	fileContent[0]='\0';
-
-	if (file != NULL)
-	{
-		char str[1000]; //string buffer
-		while (fgets(str, sizeof(str), file) != NULL) //read lines
-		{
-
-            strncat(fileContent,str,strlen(str));
-			
-		}
-		fclose(file);
-
-		
-
-	}
-	else
-	{
-		perror(fileName); //error
-        return -1;
-	}
-	char* command = NULL;
-	int count;
-
-	char* filedup = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
-	strcpy(filedup,fileContent);
-	command = strtok(filedup,"\r\n");
-	while(command!=NULL)
-	{
-		count++;
-		command = strtok(NULL,"\r\n");
-	}
-	*max = (Customer*) malloc(sizeof(Customer)*count);
-
-	char* lines[count];
-	command = NULL;
-	int i=0;
-	command = strtok(fileContent,"\r\n");
-	while(command!=NULL)
-	{
-		lines[i] = malloc(sizeof(command)*sizeof(char));
-		strcpy(lines[i],command);
-		i++;
-		command = strtok(NULL,"\r\n");
-	}
-
-	for(int k=0; k<count; k++)
-	{
-		char* token = NULL;
-		int j = 0;
-		int cID=0;
-		token =  strtok(lines[k],",");
-		while(token!=NULL)
-		{
-			switch(j){
-				(*max)[k].customerNum = cID;
-				cID++;
-				case 0:
-					(*max)[k].resource1 = atoi(token);
-					break;
-				case 1:
-					(*max)[k].resource2 = atoi(token);
-					break;
-				case 2:
-					(*max)[k].resource3 = atoi(token);
-					break;
-				default:
-					(*max)[k].resource4 = atoi(token);
-					
-			}
-			
-			j++;
-			token = strtok(NULL,",");
-		}
-	}
-	return count;
-	
-
-}
-
-
-void request_resource(){
-   sleep(1);
-   return NULL;
-}
-
-void release_resource(){
-  sleep(2);
-  int alloc[5][4];
-  return NULL;
-}
-
 int main(int argc, char *argv[]) 
 { 
 	char *fileName ="sample4_in.txt";
 
-	if(argc!=5)
-	{
-		printf("INVALID: 4 values only\n");
-		return -1;
-	}
-	else
-	{
-		for (i=1; i<argc; i++)
-		{
-			available[i]=atoi(argv[i]);
-		}
-	}
+    for (i=1; i<argc; i++)
+    {
+        available[i]=atoi(argv[i]);
+    }
     
     int count = fileRead(fileName,&max);
 	request = (Customer*) malloc(sizeof(Customer)*count);
@@ -265,6 +161,92 @@ int main(int argc, char *argv[])
 
 }
 
+void runProgram(int count)
+{
+
+	int k=safetyAlgorithm(count);
+	if (k==0)
+	{
+		printf("UNSAFE\n");
+		return;
+	}
+	else{
+
+		for (i=0;i<count;i++){ //create and execute threads
+			int runnable = safeSeq[i];
+
+			pthread_t threadID;
+			pthread_attr_t newThread;
+			pthread_attr_init(&newThread);
+
+			pthread_create(&threadID, &newThread, runThread, (void *)&runnable);
+
+
+			pthread_join(threadID, NULL);
+		}
+	}
+	
+
+	return;
+
+}
+
+void *runThread(void *thread)
+{
+	int *tid = (int*)thread;
+
+	printf("-> Customer #: %d\n", *tid);
+
+	printf("	Allocated Resources: ");
+	printf("%d ",alloc[*tid].resource1);
+	printf("%d ",alloc[*tid].resource2);
+	printf("%d ",alloc[*tid].resource3);
+	printf("%d\n",alloc[*tid].resource4);
+	printf("	Needed Resources: ");
+	printf("%d ",requested[*tid].resource1);
+	printf("%d ",requested[*tid].resource2);
+	printf("%d ",requested[*tid].resource3);
+	printf("%d\n",requested[*tid].resource4);
+	printf("	Available Resources: ");
+	printf("%d ",available[1]);
+	printf("%d ",available[2]);
+	printf("%d ",available[3]);
+	printf("%d\n",available[4]);
+
+	printf("	Thread has started \n");
+	sleep(2);
+	printf("	Thread has finished \n");
+	sleep(2);
+	printf("	Thread is releasing resources \n");
+
+	printf("	NEW AVAILABLE: ");
+
+	available[1]+=alloc[*tid].resource1;
+	printf("%d ",available[1]);
+	available[2]+=alloc[*tid].resource2;
+	printf("%d ",available[2]);
+	available[3]+=alloc[*tid].resource3;
+	printf("%d ",available[3]);
+	available[4]+=alloc[*tid].resource4;
+	printf("%d\n\n",available[4]);
+    sleep(2);
+
+	alloc[0].resource1=0;
+	alloc[1].resource2=0;
+	alloc[2].resource3=0;
+	alloc[3].resource4=0;
+
+	requested[0].resource1 = max[0].resource1;
+	requested[1].resource2 = max[1].resource2;
+	requested[2].resource3 = max[2].resource3;
+	requested[3].resource4 = max[3].resource4;
+
+	pthread_exit(0);
+
+}
+
+
+
 void programOutput(int count)
 
 {
@@ -288,6 +270,94 @@ void programOutput(int count)
 		printf("%d, %d, %d, %d\n", requested[i].resource1,requested[i].resource2,requested[i].resource3,requested[i].resource4);
 	}
 	return;
+}
+
+int fileRead(char* fileName, Customer** max)
+{
+	
+    FILE *file = fopen(fileName, "r");
+
+	struct stat st;
+	fstat(fileno(file), &st);
+	char* fileContent = (char*)malloc(((int)st.st_size+1)* sizeof(char));
+	fileContent[0]='\0';
+
+	if (file != NULL)
+	{
+		char str[1000]; //string buffer
+		while (fgets(str, sizeof(str), file) != NULL) //read lines
+		{
+
+            strncat(fileContent,str,strlen(str));
+			
+		}
+		fclose(file);
+
+		
+
+	}
+	else
+	{
+		perror(fileName); //error
+        return -1;
+	}
+	char* command = NULL;
+	int count;
+
+	char* filedup = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
+	strcpy(filedup,fileContent);
+	command = strtok(filedup,"\r\n");
+	while(command!=NULL)
+	{
+		count++;
+		command = strtok(NULL,"\r\n");
+	}
+	*max = (Customer*) malloc(sizeof(Customer)*count);
+
+	char* lines[count];
+	command = NULL;
+	int i=0;
+	command = strtok(fileContent,"\r\n");
+	while(command!=NULL)
+	{
+		lines[i] = malloc(sizeof(command)*sizeof(char));
+		strcpy(lines[i],command);
+		i++;
+		command = strtok(NULL,"\r\n");
+	}
+
+	for(int k=0; k<count; k++)
+	{
+		char* token = NULL;
+		int j = 0;
+		int cID=0;
+		token =  strtok(lines[k],",");
+		while(token!=NULL)
+		{
+			switch(j){
+				(*max)[k].customerNum = cID;
+				cID++;
+				case 0:
+					(*max)[k].resource1 = atoi(token);
+					break;
+				case 1:
+					(*max)[k].resource2 = atoi(token);
+					break;
+				case 2:
+					(*max)[k].resource3 = atoi(token);
+					break;
+				default:
+					(*max)[k].resource4 = atoi(token);
+					
+			}
+			
+			j++;
+			token = strtok(NULL,",");
+		}
+	}
+	return count;
+	
+
 }
 
 
