@@ -103,14 +103,21 @@ int main(int argc, char *argv[])
 		exit(1);
 	}
     
-    int avail[4] = { 10, 5, 7, 8 }; // Available Resources 
-
-
+    int avail[4] = { 10, 5, 7, 8 }; // Available Resources
+    
+    //Takes user input on available resources from command line in string and converts to int
+    for(int i = 1; i < argc; i++){
+           avail[i-1] = atoi(argv[i]);
+    }
+    //Prints Available Resources
+    printf("Currently Available Resources : " );
+    for(int i = 0; i < argc-1; i++){
+            printf("%d ",available[i]);
+    }
     printf("Number of Customers: %d\n", n);
     
     //ask for currently avaialbe resources
     printf("Currently Available Resources : " );
-    fgets(tmp,sizeof(tmp),stdin);
 
     printf("Maximum resources from file:\n");
     for(i=0; i<m; i++) {
