@@ -128,16 +128,16 @@ int main(int argc, char *argv[])
 					threadID = atoi(ptr);
 					break;
 				case 2:
-					resource1 = atoi(ptr);
+					r1 = atoi(ptr);
 					break;
 				case 3:
-					resource2 = atoi(ptr);
+					r2 = atoi(ptr);
 					break;
 				case 4:
-					resource3 = atoi(ptr);
+					r3 = atoi(ptr);
 					break;
 				default:
-					resource4 = atoi(ptr);
+					r4 = atoi(ptr);
 			}
 
 			j++;
@@ -148,7 +148,7 @@ int main(int argc, char *argv[])
 		{
 			printf("process request function\n");
 			printf("%s %d %d %d %d %d \n\n", cmd, threadID, r1,r2,r3,r4);
-			requestR(threadID,r1,r2,r3,r4,count);
+		
 
 
 		}
@@ -156,7 +156,6 @@ int main(int argc, char *argv[])
 		{
 			printf("process release function\n");
 			printf("%s %d %d %d %d %d \n\n", cmd, threadID, r1,r2,r3,r4);
-			releaseR(threadID,r1,r2,r3,r4);
 		}
 		else if(strstr(cmd,"*")!=NULL)
 		{
