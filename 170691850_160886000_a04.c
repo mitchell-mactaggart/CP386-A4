@@ -30,6 +30,7 @@ int safetyCheck(int ct);
 int fileRead(char* fileName, Customer** customer);
 void runProgram(int ct);
 void *runThread(void *thread);
+void requestResource(int threadID, int r1, int r2, int r3, int r4, int ct);
 
 
 //Variable Declaration
@@ -38,163 +39,6 @@ int i;
 int safeSeq[5];
 Customer* max;
 Customer* alloc;
-<<<<<<< HEAD
-Customer* r1;
-
-
-
-void requestResource(int TID, int r1, int r2, int r3, int r4, int ct)
-	{
-		if (r1<=rqd[TID].r1 && r2<=rqd[TID].r2 &&
-		r3<=rqd[TID].r3 && r4<=rqd[TID].r4)
-		{
-			if(r1 <= avail[1] && r2 <= avail[2] &&
-			r3 <= avail[3] && r4 <= avail[4])
-			{
-
-				avail[1] -= r1;
-				avail[2] -= r2;
-				avail[3] -= r3;
-				avail[4] -= r4;
-
-
-				alloc[TID].r1+= r1;
-				alloc[TID].r2+= r2;
-				alloc[TID].r3+= r3;
-				alloc[TID].r4+= r4;
-
-				rqd[TID].r1-= r1;
-				rqd[TID].r2-= r2;
-				rqd[TID].r3-= r3;
-				rqd[TID].r4-= r4;
-
-				int safe = safetyCheck(ct);
-
-				if (safe == 0)
-				{
-					avail[1] += r1;
-					avail[2] += r2;
-					avail[3] += r3;
-					avail[4] += r4;
-
-					alloc[TID].r1-= r1;
-					alloc[TID].r2-= r2;
-					alloc[TID].r3-= r3;
-					alloc[TID].r4-= r4;
-
-					rqd[TID].r1+= r1;
-					rqd[TID].r2+= r2;
-					rqd[TID].r3+= r3;
-					rqd[TID].r4+= r4;
-					printf("insuffiecient resources, need to wait\n");
-				}
-				else
-				{
-					printf("request complete");
-				}
-
-
-			}
-			else
-			{
-				printf("cant request resource");
-			}
-
-		}
-		else
-		{
-			printf("cant request resource");
-		}
-
-return;
-}
-
-void release_resource(){
-  sleep(2);
-  int alloc[5][4];
-  return NULL;
-}
-
-int fileRead(char* fileName, Customer** max) {
-
-	FILE *file = fopen(fileName, "r");
-
-	struct stat st;
-	fstat(fileno(file), &st);
-	char* fileContent = (char*) malloc(((int) st.st_size + 1) * sizeof(char));
-	fileContent[0] = '\0';
-
-	if (file != NULL) {
-		char str[1000]; //string buffer
-		while (fgets(str, sizeof(str), file) != NULL) //read lines
-		{
-
-			strncat(fileContent, str, strlen(str));
-
-		}
-		fclose(file);
-
-
-
-	} else {
-		perror(fileName); //error
-		return -1;
-	}
-	char* command = NULL;
-	int ct;
-
-	char* fileCopy = (char*) malloc((strlen(fileContent) + 1) * sizeof(char));
-	strcpy(fileCopy, fileContent);
-	command = strtok(fileCopy, "\r\n");
-	while (command != NULL) {
-		ct++;
-		command = strtok(NULL, "\r\n");
-	}
-	max = (Customer) malloc(sizeof(Customer) * ct);
-
-	char* lines[ct];
-	command = NULL;
-	int i = 0;
-	command = strtok(fileContent, "\r\n");
-	while (command != NULL) {
-		lines[i] = malloc(sizeof(command) * sizeof(char));
-		strcpy(lines[i], command);
-		i++;
-		command = strtok(NULL, "\r\n");
-	}
-
-	for (int k = 0; k < ct; k++) {
-		char* token = NULL;
-		int j = 0;
-		int cID = 0;
-		token = strtok(lines[k], ",");
-		while (token != NULL) {
-			switch (j) {
-			(*max)[k].customerNum = cID;
-			cID++;
-		case 0:
-			(*max)[k].r1 = atoi(token);
-			break;
-		case 1:
-			(*max)[k].r2 = atoi(token);
-			break;
-		case 2:
-			(*max)[k].r3 = atoi(token);
-			break;
-		default:
-			(*max)[k].r4 = atoi(token);
-
-			}
-
-			j++;
-			token = strtok(NULL, ",");
-		}
-	}
-	return ct;
-
-
-
-}
 
 int main(int argc, char *argv[])
 {
@@ -336,6 +180,184 @@ int main(int argc, char *argv[])
 
 
 }
+
+void requestResource(int TID, int r1, int r2, int r3, int r4, int ct)
+	{
+		if (r1<=rqd[TID].r1 && r2<=rqd[TID].r2 &&
+		r3<=rqd[TID].r3 && r4<=rqd[TID].r4)
+		{
+			if(r1 <= avail[1] && r2 <= avail[2] &&
+			r3 <= avail[3] && r4 <= avail[4])
+			{
+
+				avail[1] -= r1;
+				avail[2] -= r2;
+				avail[3] -= r3;
+				avail[4] -= r4;
+
+
+				alloc[TID].r1+= r1;
+				alloc[TID].r2+= r2;
+				alloc[TID].r3+= r3;
+				alloc[TID].r4+= r4;
+
+				rqd[TID].r1-= r1;
+				rqd[TID].r2-= r2;
+				rqd[TID].r3-= r3;
+				rqd[TID].r4-= r4;
+
+				int safe = safetyCheck(ct);
+
+				if (safe == 0)
+				{
+					avail[1] += r1;
+					avail[2] += r2;
+					avail[3] += r3;
+					avail[4] += r4;
+
+					alloc[TID].r1-= r1;
+					alloc[TID].r2-= r2;
+					alloc[TID].r3-= r3;
+					alloc[TID].r4-= r4;
+
+					rqd[TID].r1+= r1;
+					rqd[TID].r2+= r2;
+					rqd[TID].r3+= r3;
+					rqd[TID].r4+= r4;
+					printf("insuffiecient resources, need to wait\n");
+				}
+				else
+				{
+					printf("request complete");
+				}
+
+
+			}
+			else
+			{
+				printf("cant request resource");
+			}
+
+		}
+		else
+		{
+			printf("cant request resource");
+		}
+
+return;
+}
+
+int fileRead(char* fileName, Customer** max) {
+
+	FILE *file = fopen(fileName, "r");
+
+	struct stat st;
+	fstat(fileno(file), &st);
+	char* fileContent = (char*) malloc(((int) st.st_size + 1) * sizeof(char));
+	fileContent[0] = '\0';
+
+	if (file != NULL) {
+		char str[1000]; //string buffer
+		while (fgets(str, sizeof(str), file) != NULL) //read lines
+		{
+
+			strncat(fileContent, str, strlen(str));
+
+		}
+		fclose(file);
+
+
+
+	} else {
+		perror(fileName); //error
+		return -1;
+	}
+	char* command = NULL;
+	int ct;
+
+	char* fileCopy = (char*) malloc((strlen(fileContent) + 1) * sizeof(char));
+	strcpy(fileCopy, fileContent);
+	command = strtok(fileCopy, "\r\n");
+	while (command != NULL) {
+		ct++;
+		command = strtok(NULL, "\r\n");
+	}
+	max = (Customer) malloc(sizeof(Customer) * ct);
+
+	char* lines[ct];
+	command = NULL;
+	int i = 0;
+	command = strtok(fileContent, "\r\n");
+	while (command != NULL) {
+		lines[i] = malloc(sizeof(command) * sizeof(char));
+		strcpy(lines[i], command);
+		i++;
+		command = strtok(NULL, "\r\n");
+	}
+
+	for (int k = 0; k < ct; k++) {
+		char* token = NULL;
+		int j = 0;
+		int cID = 0;
+		token = strtok(lines[k], ",");
+		while (token != NULL) {
+			switch (j) {
+			(*max)[k].customerNum = cID;
+			cID++;
+		case 0:
+			(*max)[k].r1 = atoi(token);
+			break;
+		case 1:
+			(*max)[k].r2 = atoi(token);
+			break;
+		case 2:
+			(*max)[k].r3 = atoi(token);
+			break;
+		default:
+			(*max)[k].r4 = atoi(token);
+
+			}
+
+			j++;
+			token = strtok(NULL, ",");
+		}
+	}
+	return ct;
+
+
+
+}
+
+void runProgram(int ct)
+{
+
+	int k=safetyCheck(ct);
+	if (k==0)
+	{
+		printf("UNSAFE\n");
+		return;
+	}
+	else{
+
+		for (i=0;i<ct;i++){ //create and execute threads
+			int runnable = safeSeq[i];
+
+			pthread_t threadID;
+			pthread_attr_t newThread;
+			pthread_attr_init(&newThread);
+
+			pthread_create(&threadID, &newThread, runThread, (void *)&runnable);
+
+
+			pthread_join(threadID, NULL);
+		}
+	}
+	
+
+	return;
+
+}
+
 
 void programOutput(int ct)
 
