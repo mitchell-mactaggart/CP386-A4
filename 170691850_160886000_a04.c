@@ -19,52 +19,111 @@ GitHub Username: mitchell-macTaggart
 #include <pthread.h>
 #include <time.h>
 
+
+typedef struct customer
+{
+	int customerNum, resource1, resource2, resource3, resource4;
+} Customer;
+
 void ProgramOutput(int count);
+int safetyCheck(int count);
+int fileRead(char* fileName, Customer** customer);
+
 
 //Variable Declaration
-int n, m, i, j, k, *safeSeq;
-int MAX = 200;
+int available[5];
+int i;
+int safeSeq[5];
+Customer* max;
+Customer* alloc;
+Customer* request; 
 
-int bankers_algoithm(){
 
-    int f[n], ans[n], ind = 0; 
-    for (k = 0; k < n; k++) { 
-        f[k] = 0; 
-    } 
-    int need[n][m]; 
-    for (i = 0; i < n; i++) { 
-        for (j = 0; j < m; j++) 
-            need[i][j] = max[i][j] - alloc[i][j]; 
-    } 
-    int y = 0; 
-    for (k = 0; k < 5; k++) { 
-        for (i = 0; i < n; i++) { 
-            if (f[i] == 0) { 
-  
-                int flag = 0; 
-                for (j = 0; j < m; j++) { 
-                    if (need[i][j] > avail[j]){ 
-                        flag = 1; 
-                         break; 
-                    } 
-                } 
-  
-                if (flag == 0) { 
-                    ans[ind++] = i; 
-                    for (y = 0; y < m; y++) 
-                        avail[y] += alloc[i][y]; 
-                    f[i] = 1; 
-                } 
-            } 
-        } 
-    } 
+int fileRead(char* fileName, Customer** max)
+{
+	
+    FILE *file = fopen(fileName, "r");
 
-        printf("Following is the SAFE Sequence\n"); 
-    for (i = 0; i < n - 1; i++) 
-        printf(" P%d ->", ans[i]); 
-    printf(" P%d", ans[n - 1]); 
-  
-    return (0); 
+	struct stat st;
+	fstat(fileno(file), &st);
+	char* fileContent = (char*)malloc(((int)st.st_size+1)* sizeof(char));
+	fileContent[0]='\0';
+
+	if (file != NULL)
+	{
+		char str[1000]; //string buffer
+		while (fgets(str, sizeof(str), file) != NULL) //read lines
+		{
+
+            strncat(fileContent,str,strlen(str));
+			
+		}
+		fclose(file);
+
+		
+
+	}
+	else
+	{
+		perror(fileName); //error
+        return -1;
+	}
+	char* command = NULL;
+	int count;
+
+	char* fileCopy = (char*)malloc((strlen(fileContent)+1)*sizeof(char));
+	strcpy(fileCopy,fileContent);
+	command = strtok(fileCopy,"\r\n");
+	while(command!=NULL)
+	{
+		count++;
+		command = strtok(NULL,"\r\n");
+	}
+	*max = (Customer*) malloc(sizeof(Customer)*count);
+
+	char* lines[count];
+	command = NULL;
+	int i=0;
+	command = strtok(fileContent,"\r\n");
+	while(command!=NULL)
+	{
+		lines[i] = malloc(sizeof(command)*sizeof(char));
+		strcpy(lines[i],command);
+		i++;
+		command = strtok(NULL,"\r\n");
+	}
+
+	for(int k=0; k<count; k++)
+	{
+		char* token = NULL;
+		int j = 0;
+		int cID=0;
+		token =  strtok(lines[k],",");
+		while(token!=NULL)
+		{
+			switch(j){
+				(*max)[k].customerNum = cID;
+				cID++;
+				case 0:
+					(*max)[k].resource1 = atoi(token);
+					break;
+				case 1:
+					(*max)[k].resource2 = atoi(token);
+					break;
+				case 2:
+					(*max)[k].resource3 = atoi(token);
+					break;
+				default:
+					(*max)[k].resource4 = atoi(token);
+					
+			}
+			
+			j++;
+			token = strtok(NULL,",");
+		}
+	}
+	return count;
+	
 
 }
 
@@ -168,4 +227,112 @@ void programOutput(int count)
 		printf("%d, %d, %d, %d\n", requested[i].resource1,requested[i].resource2,requested[i].resource3,requested[i].resource4);
 	}
 	return;
+}
+
+
+int safetyCheck(int ct){
+	int finish[5] = {1,1,1,1,1};
+	
+	int available_copy[5];
+	
+	Customer* alloc_copy = NULL;
+	
+	Customer* needed_copy = NULL;
+	
+	
+	
+	alloc_copy = (Customer*) malloc(sizeof(Customer)*ct);
+	
+	needed_copy = (Customer*) malloc(sizeof(Customer)*ct);
+	
+	int count_Copy = ct;
+	
+	for(i=1;i<5;i++)
+		
+		
+		
+		available_copy[i] = available[i];
+	
+	
+	for(x =0; x <ct;x++)
+	{
+	
+		alloc_copy[x].customerNum = max[x].customerNum;
+		
+		alloc_copy[x].resource1 = alloc[x].resource1;
+		
+		alloc_copy[x].resource2 = alloc[x].resource2;
+		
+		
+		
+		alloc_copy[x].resource3 = alloc[x].resource3;
+		
+		alloc_copy[x].resource4 = alloc[x].resource4;
+		
+		needed_copy[x].customerNum = max[x].customerNum;
+		
+		needed_copy[x].resource1 = requested[x].resource1;
+		
+		needed_copy[x].resource2 = requested[x].resource2;
+		
+		needed_copy[x].resource3 = requested[x].resource3;
+		
+		needed_copy[x].resource4 = requested[x].resource4;
+	}
+	
+	int sf = 0;
+	int ck = 0;
+	int y;	
+	while(count_Copy>0)
+	{
+		sf = 0;
+		for(x=0;x<5;x++)
+		{
+			if (finish[x]==1)
+			{
+				ck = 1;
+				for (y=1;y<5;y++)
+				{
+					if (y ==0)
+					{
+						if (needed_copy[x].resource1 > available_copy[y]) {
+							ck = 0;
+							break;
+						}
+					}
+					if (y ==1)
+					{
+						if (needed_copy[x].resource2 > available_copy[y]) {
+							ck = 0;
+							break;
+						}
+					}
+					if( y ==2)
+					{
+						if (needed_copy[x].resource3 > available_copy[y]) {
+							ck = 0;
+							break;
+						}
+					}
+					if (y ==3)
+					{
+						if (needed_copy[x].resource4 > available_copy[y]) {
+							ck = 0;
+							break;
+						}
+					}
+				}
+			}	
+		}
+		if (sf == 0)
+	
+		{
+		
+			printf("not safe\n");
+			
+			break;
+		}
+	}
+	
+	return sf;
 }
