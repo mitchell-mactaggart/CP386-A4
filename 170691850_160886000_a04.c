@@ -16,7 +16,6 @@ GitHub Username: mitchell-macTaggart
 #include <pthread.h>
 #include <stdbool.h>
 #include <time.h>
-#include <pthread.h>
 #include <sys/stat.h>
 #include <semaphore.h>
 #include "headers.h"
