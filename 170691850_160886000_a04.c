@@ -134,78 +134,109 @@ int main(int argc, char *argv[])
 
 
 
-int safetyCheck(int count){
+int safetyCheck(int ct){
 	int finish[5] = {1,1,1,1,1};
+	
 	int available_copy[5];
+	
 	Customer* alloc_copy = NULL;
+	
 	Customer* needed_copy = NULL;
-	alloc_copy = (Customer*) malloc(sizeof(Customer)*count);
-	needed_copy = (Customer*) malloc(sizeof(Customer)*count);
-	int count_Copy = count;
+	
+	
+	
+	alloc_copy = (Customer*) malloc(sizeof(Customer)*ct);
+	
+	needed_copy = (Customer*) malloc(sizeof(Customer)*ct);
+	
+	int count_Copy = ct;
+	
 	for(i=1;i<5;i++)
+		
+		
+		
 		available_copy[i] = available[i];
-	for(i =0; i <count;i++)
+	
+	
+	for(x =0; x <ct;x++)
 	{
-		alloc_copy[i].customerNum = max[i].customerNum;
-		alloc_copy[i].resource1 = alloc[i].resource1;
-		alloc_copy[i].resource2 = alloc[i].resource2;
-		alloc_copy[i].resource3 = alloc[i].resource3;
-		alloc_copy[i].resource4 = alloc[i].resource4;
-		needed_copy[i].customerNum = max[i].customerNum;
-		needed_copy[i].resource1 = requested[i].resource1;
-		needed_copy[i].resource2 = requested[i].resource2;
-		needed_copy[i].resource3 = requested[i].resource3;
-		needed_copy[i].resource4 = requested[i].resource4;
+	
+		alloc_copy[x].customerNum = max[x].customerNum;
+		
+		alloc_copy[x].resource1 = alloc[x].resource1;
+		
+		alloc_copy[x].resource2 = alloc[x].resource2;
+		
+		
+		
+		alloc_copy[x].resource3 = alloc[x].resource3;
+		
+		alloc_copy[x].resource4 = alloc[x].resource4;
+		
+		needed_copy[x].customerNum = max[x].customerNum;
+		
+		needed_copy[x].resource1 = requested[x].resource1;
+		
+		needed_copy[x].resource2 = requested[x].resource2;
+		
+		needed_copy[x].resource3 = requested[x].resource3;
+		
+		needed_copy[x].resource4 = requested[x].resource4;
 	}
-	int safe = 0;
-	int check = 0;
-	int j;	
+	
+	int sf = 0;
+	int ck = 0;
+	int y;	
 	while(count_Copy>0)
 	{
-		safe = 0;
-		for(i=0;i<5;i++)
+		sf = 0;
+		for(x=0;x<5;x++)
 		{
-			if (finish[i]==1)
+			if (finish[x]==1)
 			{
-				check = 1;
-				for (j=1;j<5;j++)
+				ck = 1;
+				for (y=1;y<5;y++)
 				{
-					if (j ==0)
+					if (y ==0)
 					{
-						if (needed_copy[i].resource1 > available_copy[j]) {
-							check = 0;
+						if (needed_copy[x].resource1 > available_copy[y]) {
+							ck = 0;
 							break;
 						}
 					}
-					if (j ==1)
+					if (y ==1)
 					{
-						if (needed_copy[i].resource2 > available_copy[j]) {
-							check = 0;
+						if (needed_copy[x].resource2 > available_copy[y]) {
+							ck = 0;
 							break;
 						}
 					}
-					if( j ==2)
+					if( y ==2)
 					{
-						if (needed_copy[i].resource3 > available_copy[j]) {
-							check = 0;
+						if (needed_copy[x].resource3 > available_copy[y]) {
+							ck = 0;
 							break;
 						}
 					}
-					if (j ==3)
+					if (y ==3)
 					{
-						if (needed_copy[i].resource4 > available_copy[j]) {
-							check = 0;
+						if (needed_copy[x].resource4 > available_copy[y]) {
+							ck = 0;
 							break;
 						}
 					}
 				}
 			}	
 		}
-		if (safe == 0)
+		if (sf == 0)
+	
 		{
+		
 			printf("not safe\n");
+			
 			break;
 		}
 	}
-	return safe;
+	
+	return sf;
 }
